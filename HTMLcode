@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clash of Clans Equipment Upgrade Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 50px;
+            background: #2E2E2E;
+            color: #FFD700;
+        }
+        .container {
+            max-width: 450px;
+            margin: auto;
+            padding: 20px;
+            border: 4px solid #8B4513;
+            border-radius: 15px;
+            box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.8);
+        }
+        h2 {
+            font-family: 'Georgia', serif;
+            font-size: 24px;
+        }
+        label {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            width: 85%;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 2px solid #DAA520;
+            background-color: #654321;
+            color: white;
+        }
+	input::placeholder {
+            color: #DDDDDD;
+            opacity: 0.9;
+        }
+        .rarity-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .rarity-button {
+            width: 40%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: 2px solid white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+        .common-button {
+            background: linear-gradient(180deg, #B0C4DE, #708090);
+        }
+        .common-button:hover {
+            background: linear-gradient(180deg, #D0E0FF, #A0A8B8);
+        }
+        .epic-button {
+            background: linear-gradient(180deg, #8A2BE2, #4B0082);
+        }
+        .epic-button:hover {
+            background: linear-gradient(180deg, #A25BFF, #6A00A8);
+        }
+        .selected {
+            border: 3px solid #FFD700;
+        }
+        button {
+            cursor: pointer;
+            background: linear-gradient(180deg, #32CD32, #228B22);
+            border: 2px solid white;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+        button:hover {
+            background: linear-gradient(180deg, #50FA50, #2FAA2F);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Hero Equipment Upgrade Calculator</h2>
+        <div class="rarity-buttons">
+            <button id="commonButton" class="rarity-button common-button selected" onclick="selectRarity('common')">Common</button>
+            <button id="epicButton" class="rarity-button epic-button" onclick="selectRarity('epic')">Epic</button>
+        </div>
+        <label for="currentLevel">Current Level:</label>
+        <input type="number" id="currentLevel" min="1" max="27" value="1" placeholder="Enter current level">
+        <br>
+        <label for="targetLevel">Target Level:</label>
+        <input type="number" id="targetLevel" min="1" max="27" value="2" placeholder="Enter target level">
+        <br>
+        <button onclick="calculateCost()">Calculate Cost</button>
+        <h3 id="result"></h3>
+    </div>
+
+    <script>
+        let selectedRarity = "common";
+
+        function selectRarity(rarity) {
+            selectedRarity = rarity;
+            document.getElementById("commonButton").classList.remove("selected");
+            document.getElementById("epicButton").classList.remove("selected");
+            document.getElementById(rarity + "Button").classList.add("selected");
+        }
+
+        const upgradeCosts = {
+            2: { shiny: 120, glowy: 0, starry: 0 },
+            3: { shiny: 240, glowy: 20, starry: 0 },
+            4: { shiny: 400, glowy: 0, starry: 0 },
+            5: { shiny: 600, glowy: 0, starry: 0 },
+            6: { shiny: 840, glowy: 100, starry: 0 },
+            7: { shiny: 1120, glowy: 0, starry: 0 },
+            8: { shiny: 1440, glowy: 0, starry: 0 },
+            9: { shiny: 1800, glowy: 200, starry: 10 },
+            10: { shiny: 1900, glowy: 0, starry: 0 },
+            11: { shiny: 2000, glowy: 0, starry: 0 },
+            12: { shiny: 2100, glowy: 400, starry: 20 },
+            13: { shiny: 2200, glowy: 0, starry: 0 },
+            14: { shiny: 2300, glowy: 0, starry: 0 },
+            15: { shiny: 2400, glowy: 600, starry: 30 },
+            16: { shiny: 2500, glowy: 0, starry: 0 },
+            17: { shiny: 2600, glowy: 0, starry: 0 },
+            18: { shiny: 2700, glowy: 600, starry: 50 },
+            19: { shiny: 2800, glowy: 0, starry: 0 },
+            20: { shiny: 2900, glowy: 0, starry: 0 },
+            21: { shiny: 3000, glowy: 600, starry: 100 },
+            22: { shiny: 3100, glowy: 0, starry: 0 },
+            23: { shiny: 3200, glowy: 0, starry: 0 },
+            24: { shiny: 3300, glowy: 600, starry: 120 },
+            25: { shiny: 3400, glowy: 0, starry: 0 },
+            26: { shiny: 3500, glowy: 0, starry: 0 },
+            27: { shiny: 3600, glowy: 600, starry: 150 }
+        };
+
+        function calculateCost() {
+            let currentLevel = parseInt(document.getElementById("currentLevel").value);
+            let targetLevel = parseInt(document.getElementById("targetLevel").value);
+            let totalShiny = 0, totalGlowy = 0, totalStarry = 0;
+
+            for (let i = currentLevel + 1; i <= targetLevel; i++) {
+                totalShiny += upgradeCosts[i].shiny;
+                totalGlowy += upgradeCosts[i].glowy;
+                if (selectedRarity === "epic") {
+                    totalStarry += upgradeCosts[i].starry;
+                }
+            }
+
+            document.getElementById("result").innerText = `Total Cost:\nShiny Ore: ${totalShiny}\nGlowy Ore: ${totalGlowy}\nStarry Ore: ${totalStarry}`;
+        }
+    </script>
+</body>
+</html>
